@@ -6,15 +6,32 @@ const passport = require("../passport");
 
 //})
 
-// POST users listing
-router.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/',
-    failureRedirect: '/home',
-    session: false
-}));
 
-router.post('/signin', passport.authenticate('local-signin', () => {
-    
-}));
+router.post('/signup', (req, res, next) => {
+
+    // Custom Passport Callback
+    passport.authenticate('local-signup', function(error, user, info) {
+        if (error) {
+            return res.status(500).json({
+                message: error || 'Oops, something happened'
+            });
+        }
+
+        return res.json(user);
+    })(req, res, next)
+});
+
+router.post('/signin', (req, res, next) => {
+    // Custom Passport Callback
+    passport.authenticate('local-signin', function(error, user, info) {
+        if (error) {
+            return res.status(500).json({
+                message: error || 'Oops, something happened'
+            });
+        }
+
+        return res.json(user);
+    })(req, res, next)
+});
 
 module.exports = router;
